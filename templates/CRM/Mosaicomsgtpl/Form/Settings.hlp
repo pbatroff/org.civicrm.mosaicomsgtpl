@@ -1,0 +1,9 @@
+{*-------------------------------------------------------+
+| Mosaicomsgtpl Extension                                |
+| Author: P. Batroff (batroff@systopia.de)               |
++-------------------------------------------------------*}
+
+{htxt id='id-beginning_regex'}
+  <p>{ts domain="org.civicrm.mosaicomsgtpl"}If this field is filled, only templates beginning with the string in here are synchronized.{/ts}</p>
+  <p>{ts domain="org.civicrm.mosaicomsgtpl"}For example, when test is entered here, only Mosaico templates beginning with test are synced. test_example would be synced, simple_example would not.{/ts}</p>
+{/htxt}

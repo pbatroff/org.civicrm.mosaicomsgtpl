@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<menu>
+    <item>
+        <path>civicrm/admin/setting/mosaicomsgtpl</path>
+        <page_callback>CRM_Mosaicomsgtpl_Form_Settings</page_callback>
+        <title>Mosaico Mesage Template Synchronization Settings</title>
+        <access_arguments>access CiviCRM</access_arguments>
+        <adminGroup>CiviMail</adminGroup>
+        <icon>admin/import_export_map.png</icon>
+    </item>
+</menu>

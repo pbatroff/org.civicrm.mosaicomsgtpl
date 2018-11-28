@@ -5,6 +5,12 @@ use CRM_Mosaicomsgtpl_ExtensionUtil as E;
 
 
 function mosaicomsgtpl_civicrm_post($op, $objectName, $objectId, &$objectRef = NULL) {
+  $config = CRM_Mosaicomsgtpl_Config::singleton();
+  $settings = $config->getSettings();
+  if (!$settings['mosaico_global_sync_activated']) {
+    return;
+  }
+
   if (($op === 'create' || $op === 'edit') && $objectName === 'MosaicoTemplate') {
     if (Civi::settings()->get('mosaicomsgtpl_suspend')) {
       return;

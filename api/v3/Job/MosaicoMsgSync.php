@@ -40,6 +40,14 @@ function civicrm_api3_job_mosaico_msg_sync($params) {
 
     foreach ($existingMosTpls['values'] as $existingMosTpl) {
 
+      $config = CRM_Mosaicomsgtpl_Config::singleton();
+      $settings = $config->getSettings();
+      if (!empty($settings['mosaico_msg_template_name_filter'])) {
+        $pattern = "/^{$settings['mosaico_msg_template_name_filter']}/";
+        if (!preg_match ( $pattern , $existingMosTpl['title'], $matches )) {
+          continue;
+        }
+      }
 
       // Handle common parameters for things that can be updated...
 

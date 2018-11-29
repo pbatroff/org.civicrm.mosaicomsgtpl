@@ -12,7 +12,7 @@
         <div class="clear"></div>
     </div>
     &nbsp;    <div class="crm-section">
-        <div class="label">{$form.mosaico_global_sync_activated.label}</div>
+        <div class="label">{$form.mosaico_global_sync_activated.label} <a onclick='CRM.help("{ts domain="org.civicrm.mosaicomsgtpl"}{/ts}", {literal}{"id":"id-all_synchronization","file":"CRM\/Mosaicomsgtpl\/Form\/Settings"}{/literal}); return false;' href="#" title="{ts domain="org.civicrm.mosaicomsgtpl"}Help{/ts}" class="helpicon">&nbsp;</a></div>
         <div class="content">{$form.mosaico_global_sync_activated.html}</div>
         <div class="clear"></div>
     </div>

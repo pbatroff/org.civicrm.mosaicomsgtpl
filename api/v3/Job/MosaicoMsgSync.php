@@ -38,10 +38,10 @@ function civicrm_api3_job_mosaico_msg_sync($params) {
     }
     $existingMosTpls = civicrm_api3('MosaicoTemplate', 'get', $existingMosTplParams);
 
-    foreach ($existingMosTpls['values'] as $existingMosTpl) {
+    $config = CRM_Mosaicomsgtpl_Config::singleton();
+    $settings = $config->getSettings();
 
-      $config = CRM_Mosaicomsgtpl_Config::singleton();
-      $settings = $config->getSettings();
+    foreach ($existingMosTpls['values'] as $existingMosTpl) {
       if (!empty($settings['mosaico_msg_template_name_filter'])) {
         $pattern = "/^{$settings['mosaico_msg_template_name_filter']}/";
         if (!preg_match ( $pattern , $existingMosTpl['title'], $matches )) {
@@ -50,21 +50,30 @@ function civicrm_api3_job_mosaico_msg_sync($params) {
       }
 
       // Handle common parameters for things that can be updated...
+      if (!empty($settings[$existingMosTpl['title']])) {
+        // Use specifically configured title/subject
+        $createParams = [
+          'msg_html'    => _civicrm_api3_job_mosaico_msg_filter($existingMosTpl['html']),
+          'msg_title'   => $existingMosTpl['title'],
+          'msg_subject' => $settings[$existingMosTpl['title']],
+        ];
+      } else {
+        // Split the Mosaico message title into title and subject.
+        //
+        // This is a big ugly, but Mosaico templates do not store a subject.
+        // Being able to edit the subject of a message template is essential, but
+        // being able to administer templates by an internal name is also a very
+        // cool feature ("Initial welcome email").
+        //
+        // We allow the Mosaico title to include a subject following the | symbol.
+        preg_match('/^(.+?)\s*[|]\s*(.+)$/', $existingMosTpl['title'], $_);
+        $createParams = [
+          'msg_html'    => _civicrm_api3_job_mosaico_msg_filter($existingMosTpl['html']),
+          'msg_title'   => empty($_[1]) ? $existingMosTpl['title'] : $_[1],
+          'msg_subject' => empty($_[2]) ? $existingMosTpl['title'] : $_[2], // default to title, as before.
+        ];
+      }
 
-      // Split the Mosaico message title into title and subject.
-      //
-      // This is a big ugly, but Mosaico templates do not store a subject.
-      // Being able to edit the subject of a message template is essential, but
-      // being able to administer templates by an internal name is also a very
-      // cool feature ("Initial welcome email").
-      //
-      // We allow the Mosaico title to include a subject following the | symbol.
-      preg_match('/^(.+?)\s*[|]\s*(.+)$/', $existingMosTpl['title'], $_);
-      $createParams = [
-        'msg_html'    => _civicrm_api3_job_mosaico_msg_filter($existingMosTpl['html']),
-        'msg_title'   => empty($_[1]) ? $existingMosTpl['title'] : $_[1],
-        'msg_subject' => empty($_[2]) ? $existingMosTpl['title'] : $_[2], // default to title, as before.
-      ];
 
       // When a template is created from a Mosaico Base Template, it will not have a msg_tpl_id.
       // However when a template is created from a Copy of a MosaicoTemplate, it will come in

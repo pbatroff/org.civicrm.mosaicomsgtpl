@@ -44,18 +44,18 @@ function civicrm_api3_job_mosaico_msg_sync($params) {
     foreach ($existingMosTpls['values'] as $existingMosTpl) {
       if (!empty($settings['mosaico_msg_template_name_filter'])) {
         $pattern = "/^{$settings['mosaico_msg_template_name_filter']}/";
-        if (!preg_match ( $pattern , $existingMosTpl['title'], $matches )) {
+        if (!preg_match ( $pattern , str_replace(" ","_", $existingMosTpl['title']), $matches )) {
           continue;
         }
       }
 
       // Handle common parameters for things that can be updated...
-      if (!empty($settings[$existingMosTpl['title']])) {
+      if (!empty($settings[str_replace(" ","_", $existingMosTpl['title'])])) {
         // Use specifically configured title/subject
         $createParams = [
           'msg_html'    => _civicrm_api3_job_mosaico_msg_filter($existingMosTpl['html']),
           'msg_title'   => $existingMosTpl['title'],
-          'msg_subject' => $settings[$existingMosTpl['title']],
+          'msg_subject' => $settings[str_replace(" ","_", $existingMosTpl['title'])],
         ];
       } else {
         // Split the Mosaico message title into title and subject.

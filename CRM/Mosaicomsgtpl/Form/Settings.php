@@ -36,12 +36,12 @@ class CRM_Mosaicomsgtpl_Form_Settings extends CRM_Core_Form {
     foreach ($templates as $id => $name) {
       $this->add(
         'text',
-        $name,
+        str_replace(" ","_", $name),
         E::ts($name),
         array("class" => "huge"),
         FALSE
       );
-      $template_form_elements[] = $name;
+      $template_form_elements[] = str_replace(" ","_", $name);
     }
     $this->assign('template_names', $template_form_elements);
 
@@ -75,6 +75,7 @@ class CRM_Mosaicomsgtpl_Form_Settings extends CRM_Core_Form {
     $values = $this->exportValues();
     $config->setSettings($values);
 
+    civicrm_api3('Job', 'mosaico_msg_sync');
     parent::postProcess();
   }
 
@@ -96,7 +97,7 @@ class CRM_Mosaicomsgtpl_Form_Settings extends CRM_Core_Form {
     if (!empty($settings['mosaico_msg_template_name_filter'])) {
       $pattern = "/^{$settings['mosaico_msg_template_name_filter']}/";
       foreach ($result['values'] as $key => $template) {
-        if (!preg_match ( $pattern , $template['title'], $matches )) {
+        if (!preg_match ( $pattern , str_replace(" ","_", $template['title']), $matches )) {
           // TODO: check preg match, if match add to return value array
           continue;
         }

@@ -12,6 +12,7 @@ use CRM_Mosaicomsgtpl_ExtensionUtil as E;
  * @see https://wiki.civicrm.org/confluence/display/CRMDOC/QuickForm+Reference
  */
 class CRM_Mosaicomsgtpl_Form_Settings extends CRM_Core_Form {
+
   public function buildQuickForm() {
 
     // add form elements
@@ -28,6 +29,22 @@ class CRM_Mosaicomsgtpl_Form_Settings extends CRM_Core_Form {
       'mosaico_global_sync_activated',
       E::ts('Activate Global Template Synchronization')
     );
+
+    $templates = $this->get_all_mosaico_templates();
+    $template_form_elements = [];
+
+    foreach ($templates as $id => $name) {
+      $this->add(
+        'text',
+        $name,
+        E::ts($name),
+        array("class" => "huge"),
+        FALSE
+      );
+      $template_form_elements[] = $name;
+    }
+    $this->assign('template_names', $template_form_elements);
+
 
     // submit
     $this->addButtons(array(
@@ -61,4 +78,32 @@ class CRM_Mosaicomsgtpl_Form_Settings extends CRM_Core_Form {
     parent::postProcess();
   }
 
+
+  /**
+   * @return array
+   */
+  private function get_all_mosaico_templates() {
+
+    $matched_tempates = [];
+    $result = civicrm_api3('MosaicoTemplate', 'get', [
+      'sequential' => 1,
+      'return' => ["title"],
+      'options' => ['limit' => 0],
+    ]);
+
+    $config = CRM_Mosaicomsgtpl_Config::singleton();
+    $settings = $config->getSettings();
+    if (!empty($settings['mosaico_msg_template_name_filter'])) {
+      $pattern = "/^{$settings['mosaico_msg_template_name_filter']}/";
+      foreach ($result['values'] as $key => $template) {
+        if (!preg_match ( $pattern , $template['title'], $matches )) {
+          // TODO: check preg match, if match add to return value array
+          continue;
+        }
+        $matched_tempates[$template['id']] = $template['title'];
+      }
+    }
+
+    return $matched_tempates;
+  }
 }

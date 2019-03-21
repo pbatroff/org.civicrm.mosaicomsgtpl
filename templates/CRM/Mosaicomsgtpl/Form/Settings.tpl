@@ -11,13 +11,36 @@
         <div class="content">{$form.mosaico_msg_template_name_filter.html}</div>
         <div class="clear"></div>
     </div>
-    &nbsp;    <div class="crm-section">
+&nbsp;   <div class="crm-section">
         <div class="label">{$form.mosaico_global_sync_activated.label} <a onclick='CRM.help("{ts domain="org.civicrm.mosaicomsgtpl"}{/ts}", {literal}{"id":"id-all_synchronization","file":"CRM\/Mosaicomsgtpl\/Form\/Settings"}{/literal}); return false;' href="#" title="{ts domain="org.civicrm.mosaicomsgtpl"}Help{/ts}" class="helpicon">&nbsp;</a></div>
         <div class="content">{$form.mosaico_global_sync_activated.html}</div>
         <div class="clear"></div>
     </div>
 </div>
 
+<br/><h3>{ts domain='org.civicrm.mosaicomsgtpl'}Template Configuration{/ts}</h3>
+<div class="crm-block crm-form-block" style="margin-left: 4px; margin-right: 4px">
+    <table class="form-layout-compressed">
+        <tr>
+            <th>
+                Template name
+            </th>
+            <th>
+                Template Subject
+            </th>
+        </tr>
+        {foreach from=$template_names item=tpl_name}
+            <tr>
+                <td>
+                    {$tpl_name}
+                </td>
+                <td>
+                    {$form.$tpl_name.html}
+                </td>
+            </tr>
+        {/foreach} {* template_names *}
+    </table>
+</div>
 
 <div class="crm-submit-buttons">
     {include file="CRM/common/formButtons.tpl" location="bottom"}

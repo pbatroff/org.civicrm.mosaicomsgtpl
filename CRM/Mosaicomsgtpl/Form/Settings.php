@@ -75,7 +75,10 @@ class CRM_Mosaicomsgtpl_Form_Settings extends CRM_Core_Form {
     $values = $this->exportValues();
     $config->setSettings($values);
 
-    civicrm_api3('Job', 'mosaico_msg_sync');
+    // check if synchronization is active, and if so sync, otherwise leave as it is!
+    if ($values['mosaico_global_sync_activated']) {
+      civicrm_api3('Job', 'mosaico_msg_sync');
+    }
     parent::postProcess();
   }
 
